@@ -69,7 +69,7 @@ export default function Login() {
       >
         <View style={styles.content}>
           <View style={styles.formContainer}>
-            <View style={{ position: "relative" }}>
+            <View style={{ position: "relative", width: "100%" }}>
               <Image source={ImagesSource.mascote} style={styles.mascote} />
               <View style={styles.card}>
                 <Text style={styles.title}>Bem-vindo!</Text>
@@ -88,7 +88,6 @@ export default function Login() {
                     autoCapitalize="none"
                     autoCorrect={false}
                   />
-
                   <TextInput
                     style={styles.input}
                     value={password}
@@ -171,8 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     overflow: "hidden",
-    padding: 24,
-    paddingTop: 60,
+    paddingTop: 80,
     width: "100%",
     gap: 24,
   },
