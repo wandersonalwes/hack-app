@@ -10,6 +10,7 @@ import { BlurView } from "expo-blur";
 
 import { ImagesSource } from "@/assets/images";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { QuizModal } from "@/components/quiz-modal";
 
 type Mission = {
   id: string;
@@ -170,6 +171,8 @@ export default function Journey() {
   const { top } = useSafeAreaInsets();
   return (
     <>
+      <QuizModal />
+
       <BlurView
         style={[styles.coinContainer, { top }]}
         intensity={50}
