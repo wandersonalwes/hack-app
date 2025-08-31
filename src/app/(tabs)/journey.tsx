@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BlurView } from "expo-blur";
 
 import { ImagesSource } from "@/assets/images";
@@ -171,8 +171,17 @@ const styles = StyleSheet.create({
 
 export default function Journey() {
   const { top } = useSafeAreaInsets();
+  const scrollViewRef = useRef<ScrollView>(null);
   const [showQuiz, setShowQuiz] = useState(false);
   const [selectedMission, setSelectedMission] = useState<string | null>(null);
+
+  // Scroll to bottom on mount for reverse scrolling effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: false });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleMissionPress = (missionId: string, missionStatus: string) => {
     if (missionStatus === "locked") return;
@@ -215,6 +224,7 @@ export default function Journey() {
         </View>
       </BlurView>
       <ScrollView
+        ref={scrollViewRef}
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
