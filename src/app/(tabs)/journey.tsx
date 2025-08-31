@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useState } from "react";
 import { BlurView } from "expo-blur";
 
 import { ImagesSource } from "@/assets/images";
@@ -169,9 +170,32 @@ const styles = StyleSheet.create({
 
 export default function Journey() {
   const { top } = useSafeAreaInsets();
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [selectedMission, setSelectedMission] = useState<string | null>(null);
+
+  const handleMissionPress = (missionId: string, missionStatus: string) => {
+    if (missionStatus === "locked") return;
+    setSelectedMission(missionId);
+    setShowQuiz(true);
+  };
+
+  const handleQuizComplete = (score: number) => {
+    console.log(`Quiz completed with score: ${score}`);
+    // Here you could update mission status, add XP, etc.
+  };
+
+  const handleQuizClose = () => {
+    setShowQuiz(false);
+    setSelectedMission(null);
+  };
+
   return (
     <>
-      <QuizModal />
+      <QuizModal 
+        visible={showQuiz}
+        onClose={handleQuizClose}
+        onComplete={handleQuizComplete}
+      />
 
       <BlurView
         style={[styles.coinContainer, { top }]}
@@ -210,6 +234,7 @@ export default function Journey() {
                 top: pathPosition.y + 40, // Add padding offset
               }}
               disabled={mission.status === "locked"}
+              onPress={() => handleMissionPress(mission.id, mission.status)}
             >
               <Image
                 // @ts-ignore
