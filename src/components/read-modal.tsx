@@ -151,18 +151,18 @@ export function ReadModal({ visible, onClose, onComplete }: ReadModalProps) {
                       activeOpacity={0.8}
                       onPress={handleNext}
                     >
-                    <LinearGradient
-                      colors={["#65a83a", "#3b8033"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={styles.nextButton}
-                    >
-                      <Text style={styles.nextButtonText}>
-                        {currentVerseIndex < biblicalVerses.length - 1
-                          ? "Próximo"
-                          : "Finalizar"}
-                      </Text>
-                    </LinearGradient>
+                      <LinearGradient
+                        colors={["#65a83a", "#3b8033"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={styles.nextButton}
+                      >
+                        <Text style={styles.nextButtonText}>
+                          {currentVerseIndex < biblicalVerses.length - 1
+                            ? "Próximo"
+                            : "Finalizar"}
+                        </Text>
+                      </LinearGradient>
                     </TouchableOpacity>
                   </View>
                 </>
