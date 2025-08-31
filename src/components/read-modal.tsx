@@ -103,51 +103,54 @@ export function ReadModal({ visible, onClose, onComplete }: ReadModalProps) {
         <View style={[styles.container]}>
           <TouchableOpacity activeOpacity={1} style={styles.modalContent}>
             <BlurView intensity={50} tint="dark" style={styles.card}>
-              {/* Mascot */}
-              <Image
-                source={ImagesSource.mascote}
-                style={[styles.mascot, { top: top + 20 }]}
-              />
-
-              {/* Progress Bar */}
-              <View style={styles.progressContainer}>
-                <View style={styles.progressBar}>
-                  <View
-                    style={[styles.progressFill, { width: `${progress}%` }]}
-                  />
+              {/* Header Section */}
+              <View style={styles.headerSection}>
+                <Image
+                  source={ImagesSource.mascote}
+                  style={styles.mascot}
+                />
+                
+                {/* Progress Bar */}
+                <View style={styles.progressContainer}>
+                  <View style={styles.progressBar}>
+                    <View
+                      style={[styles.progressFill, { width: `${progress}%` }]}
+                    />
+                  </View>
+                  <Text style={styles.progressText}>
+                    {currentVerseIndex + 1} de {biblicalVerses.length}
+                  </Text>
                 </View>
-                <Text style={styles.progressText}>
-                  {currentVerseIndex + 1} de {biblicalVerses.length}
-                </Text>
               </View>
 
               {!isCompleted ? (
                 <>
-                  {/* Verse Content */}
-                  <View style={styles.verseContainer}>
-                    <Text style={styles.verseText}>"{currentVerse.verse}"</Text>
-                    <Text style={styles.referenceText}>
-                      {currentVerse.reference}
-                    </Text>
+                  {/* Content Section */}
+                  <View style={styles.contentSection}>
+                    {/* Verse Content */}
+                    <View style={styles.verseContainer}>
+                      <Text style={styles.verseText}>"{currentVerse.verse}"</Text>
+                      <Text style={styles.referenceText}>
+                        {currentVerse.reference}
+                      </Text>
+                    </View>
+
+                    {/* Reflection */}
+                    <View style={styles.reflectionContainer}>
+                      <Text style={styles.reflectionTitle}>💭 Reflexão</Text>
+                      <Text style={styles.reflectionText}>
+                        {currentVerse.reflection}
+                      </Text>
+                    </View>
                   </View>
 
-                  {/* Reflection */}
-                  <View style={styles.reflectionContainer}>
-                    <Text style={styles.reflectionTitle}>💭 Reflexão</Text>
-                    <Text style={styles.reflectionText}>
-                      {currentVerse.reflection}
-                    </Text>
-                  </View>
-
-                  {/* Next Button */}
-                  <TouchableOpacity
-                    style={[
-                      styles.nextButtonContainer,
-                      { bottom: bottom + 20 },
-                    ]}
-                    activeOpacity={0.8}
-                    onPress={handleNext}
-                  >
+                  {/* Footer Section */}
+                  <View style={styles.footerSection}>
+                    <TouchableOpacity
+                      style={styles.nextButtonContainer}
+                      activeOpacity={0.8}
+                      onPress={handleNext}
+                    >
                     <LinearGradient
                       colors={["#65a83a", "#3b8033"]}
                       start={{ x: 0, y: 0 }}
@@ -160,37 +163,42 @@ export function ReadModal({ visible, onClose, onComplete }: ReadModalProps) {
                           : "Finalizar"}
                       </Text>
                     </LinearGradient>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                  </View>
                 </>
               ) : (
                 <>
-                  {/* Completion Screen */}
-                  <View style={styles.completionContainer}>
-                    <Text style={styles.completionTitle}>🙏 Parabéns!</Text>
-                    <Text style={styles.completionText}>
-                      Você completou a leitura dos versículos bíblicos.
-                    </Text>
-                    <Text style={styles.completionSubtext}>
-                      Que essas palavras permaneçam em seu coração e guiem seus
-                      passos.
-                    </Text>
+                  {/* Content Section - Completion */}
+                  <View style={styles.contentSection}>
+                    <View style={styles.completionContainer}>
+                      <Text style={styles.completionTitle}>🙏 Parabéns!</Text>
+                      <Text style={styles.completionText}>
+                        Você completou a leitura dos versículos bíblicos.
+                      </Text>
+                      <Text style={styles.completionSubtext}>
+                        Que essas palavras permaneçam em seu coração e guiem seus
+                        passos.
+                      </Text>
+                    </View>
                   </View>
 
-                  {/* Complete Button */}
-                  <TouchableOpacity
-                    style={styles.nextButtonContainer}
-                    activeOpacity={0.8}
-                    onPress={handleComplete}
-                  >
-                    <LinearGradient
-                      colors={["#65a83a", "#3b8033"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={styles.nextButton}
+                  {/* Footer Section - Complete Button */}
+                  <View style={styles.footerSection}>
+                    <TouchableOpacity
+                      style={styles.nextButtonContainer}
+                      activeOpacity={0.8}
+                      onPress={handleComplete}
                     >
-                      <Text style={styles.nextButtonText}>Concluir</Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
+                      <LinearGradient
+                        colors={["#65a83a", "#3b8033"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={styles.nextButton}
+                      >
+                        <Text style={styles.nextButtonText}>Concluir</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
                 </>
               )}
             </BlurView>
@@ -219,10 +227,24 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     alignItems: "center",
-
     height: Dimensions.get("window").height,
-
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+  },
+  headerSection: {
+    width: "100%",
+    alignItems: "center",
+    paddingTop: 40,
+    paddingBottom: 20,
+  },
+  contentSection: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+  },
+  footerSection: {
+    width: "100%",
+    paddingBottom: 40,
   },
   mascot: {
     width: 120,
