@@ -8,4 +8,5 @@ export const ImagesSource = {
   quizOn: require('./quiz-on.png'),
   readOk: require('./read-ok.png'),
   readOn: require('./read-on.png'),
+  coin: require('./coin.png'),
 }

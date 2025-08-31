@@ -1,7 +1,8 @@
-import { Image, ImageBackground, ScrollView } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { ImagesSource } from "@/assets/images";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { colors } from "@/styles/colors";
 
 type Mission = {
   id: string;
@@ -21,76 +22,13 @@ const journey = {
   color: ["#e74124", "#ec16bdff"],
   missions: [
     {
-      id: "1",
-      type: "mission" as const,
-      status: "locked" as const,
-      xp: 15,
-      icon: "✝️",
-      color: "#e74124",
-      position: "center" as const,
-    },
-    {
-      id: "2",
-      type: "read" as const,
-      status: "locked" as const,
-      xp: 15,
-      icon: "📖",
-      color: "#e74124",
-      position: "left" as const,
-    },
-    {
-      id: "3",
-      type: "quiz" as const,
-      status: "locked" as const,
-      xp: 15,
-      icon: "🙏",
-      color: "#e74124",
-      position: "right" as const,
-    },
-    {
-      id: "4",
-      type: "chat" as const,
-      status: "locked" as const,
-      xp: 25,
-      icon: "📚",
-      color: "#F59E0B",
-      position: "center" as const,
-    },
-    {
-      id: "5",
-      type: "mission" as const,
-      status: "locked" as const,
-      xp: 15,
-      icon: "📜",
-      color: "#e74124",
-      position: "left" as const,
-    },
-    {
-      id: "6",
-      type: "read" as const,
-      status: "locked" as const,
-      xp: 20,
-      icon: "📖",
-      color: "#1E40AF",
-      position: "right" as const,
-    },
-    {
-      id: "6b",
-      type: "quiz" as const,
-      status: "locked" as const,
-      xp: 25,
-      icon: "🎯",
-      color: "#059669",
-      position: "left" as const,
-    },
-    {
       id: "6c",
       type: "chat" as const,
       status: "locked" as const,
       xp: 15,
       icon: "💬",
       color: "#7C3AED",
-      position: "center" as const,
+      position: "right" as const,
     },
     {
       id: "6d",
@@ -99,7 +37,7 @@ const journey = {
       xp: 30,
       icon: "🧠",
       color: "#EF4444",
-      position: "right" as const,
+      position: "left" as const,
     },
     {
       id: "7",
@@ -108,7 +46,7 @@ const journey = {
       xp: 30,
       icon: "🏆",
       color: "#8B5CF6",
-      position: "center" as const,
+      position: "right" as const,
     },
     {
       id: "8",
@@ -135,21 +73,24 @@ const journey = {
       xp: 20,
       icon: "💪",
       color: "#EF4444",
-      position: "center" as const,
+      position: "left" as const,
     },
   ],
 };
 
-function getPositionOffset(position: "left" | "right" | "center"): number {
-  const baseOffset = 40;
-  switch (position) {
-    case "left":
-      return -baseOffset;
-    case "right":
-      return baseOffset;
-    default:
-      return 0;
-  }
+// Path coordinates for each mission to align with background path
+// These coordinates are calculated based on the background image path
+const missionPathCoordinates: Record<string, { x: number; y: number }> = {
+  "6c": { x: 70, y: 140 }, // Right curve
+  "6d": { x: -10, y: 290 }, // Left curve
+  "7": { x: 55, y: 430 }, // Right side
+  "8": { x: -25, y: 600 }, // Left curve
+  "9": { x: 60, y: 730 }, // Right side
+  "10": { x: -20, y: 900 }, // Final left position
+};
+
+function getMissionPathPosition(missionId: string): { x: number; y: number } {
+  return missionPathCoordinates[missionId] || { x: 0, y: 0 };
 }
 
 function getMissionImageSource(mission: Mission) {
@@ -164,41 +105,104 @@ function getMissionImageSource(mission: Mission) {
   return mission.status === "completed" ? ok : on;
 }
 
+const styles = StyleSheet.create({
+  coinContainer: {
+    position: "absolute",
+    right: 20,
+    zIndex: 100,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: colors.background,
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  coinText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  coinImage: {
+    width: 30,
+    height: 30,
+  },
+  scrollContainer: {
+    paddingVertical: 40,
+    paddingHorizontal: 15,
+    minHeight: "100%",
+    position: "relative",
+  },
+  backgroundImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    width: "100%",
+    height: "100%",
+    transform: [{ scale: 2.5 }],
+    zIndex: -1,
+  },
+  missionImage: {
+    position: "absolute",
+    width: 80,
+    height: 80,
+    left: "50%",
+    zIndex: 1,
+  },
+  spacer: {
+    width: 1,
+    height: 1040,
+    opacity: 0,
+  },
+});
+
 export default function Journey() {
+  const { top } = useSafeAreaInsets();
   return (
-    <ImageBackground
-      style={{
-        flex: 1,
-        // transform: [{ scale: 2.5 }],
-      }}
-      source={ImagesSource.background}
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            alignItems: "center",
-            paddingVertical: 40,
-            paddingHorizontal: 20,
-          }}
-          showsVerticalScrollIndicator={false}
-        >
-          {journey.missions.map((mission, index) => (
+    <>
+      <View style={[styles.coinContainer, { top }]}>
+        <Text style={styles.coinText}>5000</Text>
+        <Image
+          source={ImagesSource.coin}
+          style={styles.coinImage}
+          resizeMode="contain"
+        />
+      </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Background Image - Scrollable with content */}
+        <Image
+          source={ImagesSource.background}
+          style={styles.backgroundImage}
+          resizeMode="contain"
+        />
+
+        {/* Journey Missions positioned on path */}
+        {journey.missions.map((mission, index) => {
+          const pathPosition = getMissionPathPosition(mission.id);
+          return (
             <Image
               key={mission.id}
               source={getMissionImageSource(mission)}
-              style={{
-                width: 80,
-                height: 80,
-                opacity: mission.status === "locked" ? 0.3 : 1,
-                marginLeft: getPositionOffset(mission.position),
-                marginVertical: 25,
-              }}
+              style={[
+                styles.missionImage,
+                {
+                  opacity: mission.status === "locked" ? 0.3 : 1,
+                  marginLeft: pathPosition.x - 40, // Center the 80px image (40px offset)
+                  top: pathPosition.y + 40, // Add padding offset
+                },
+              ]}
               resizeMode="contain"
             />
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+          );
+        })}
+
+        {/* Invisible spacer to ensure proper scroll height */}
+        <Image style={styles.spacer} />
+      </ScrollView>
+    </>
   );
 }
