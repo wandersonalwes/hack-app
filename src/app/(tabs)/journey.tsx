@@ -1,8 +1,8 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { BlurView } from "expo-blur";
 
 import { ImagesSource } from "@/assets/images";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "@/styles/colors";
 
 type Mission = {
   id: string;
@@ -110,11 +110,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
     zIndex: 100,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  coinContent: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(18, 24, 38, 0.6)",
-    borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
@@ -161,14 +163,20 @@ export default function Journey() {
   const { top } = useSafeAreaInsets();
   return (
     <>
-      <View style={[styles.coinContainer, { top }]}>
-        <Text style={styles.coinText}>5000</Text>
-        <Image
-          source={ImagesSource.coin}
-          style={styles.coinImage}
-          resizeMode="contain"
-        />
-      </View>
+      <BlurView
+        style={[styles.coinContainer, { top }]}
+        intensity={50}
+        tint="dark"
+      >
+        <View style={styles.coinContent}>
+          <Text style={styles.coinText}>5000</Text>
+          <Image
+            source={ImagesSource.coin}
+            style={styles.coinImage}
+            resizeMode="contain"
+          />
+        </View>
+      </BlurView>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
