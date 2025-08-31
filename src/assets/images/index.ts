@@ -10,4 +10,5 @@ export const ImagesSource = {
   readOn: require("./read-on.png"),
   coin: require("./coin.png"),
   mascote: require("./mascote.png"),
+  splash: require("./splash.jpg"),
 };
