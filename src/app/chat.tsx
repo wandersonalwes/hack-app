@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
@@ -34,10 +36,15 @@ const initialAIQuestions = [
 
 export default function Chat() {
   const { top, bottom } = useSafeAreaInsets();
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  const handleGoBack = () => {
+    router.back();
+  };
 
   // Initialize chat with AI question
   useEffect(() => {
@@ -143,8 +150,16 @@ export default function Chat() {
         style={[styles.header, { paddingTop: top }]}
       >
         <View style={styles.headerContent}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={handleGoBack}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
+          </TouchableOpacity>
+          
           <Image source={ImagesSource.mascote} style={styles.headerAvatar} />
-          <View>
+          <View style={styles.headerInfo}>
             <Text style={styles.headerTitle}>Claudinho</Text>
             <Text style={styles.headerSubtitle}>
               {isTyping ? "Digitando..." : "Online"}
@@ -228,10 +243,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
   },
+  backButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   headerAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
+  },
+  headerInfo: {
+    flex: 1,
   },
   headerTitle: {
     fontSize: 18,
