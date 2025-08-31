@@ -1,4 +1,11 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { BlurView } from "expo-blur";
 
 import { ImagesSource } from "@/assets/images";
@@ -81,12 +88,12 @@ const journey = {
 // Path coordinates for each mission to align with background path
 // These coordinates are calculated based on the background image path
 const missionPathCoordinates: Record<string, { x: number; y: number }> = {
-  "6c": { x: 70, y: 140 }, // Right curve
-  "6d": { x: -10, y: 290 }, // Left curve
-  "7": { x: 55, y: 430 }, // Right side
-  "8": { x: -25, y: 600 }, // Left curve
-  "9": { x: 60, y: 730 }, // Right side
-  "10": { x: -20, y: 900 }, // Final left position
+  "6c": { x: 90, y: 100 }, // Right curve
+  "6d": { x: -80, y: 240 }, // Left curve
+  "7": { x: 40, y: 390 }, // Right side
+  "8": { x: -110, y: 550 }, // Left curve
+  "9": { x: 50, y: 700 }, // Right side
+  "10": { x: -80, y: 900 }, // Final left position
 };
 
 function getMissionPathPosition(missionId: string): { x: number; y: number } {
@@ -192,19 +199,22 @@ export default function Journey() {
         {journey.missions.map((mission, index) => {
           const pathPosition = getMissionPathPosition(mission.id);
           return (
-            <Image
+            <TouchableOpacity
               key={mission.id}
-              source={getMissionImageSource(mission)}
-              style={[
-                styles.missionImage,
-                {
-                  opacity: mission.status === "locked" ? 0.3 : 1,
-                  marginLeft: pathPosition.x - 40, // Center the 80px image (40px offset)
-                  top: pathPosition.y + 40, // Add padding offset
-                },
-              ]}
-              resizeMode="contain"
-            />
+              style={{
+                opacity: mission.status === "locked" ? 0.4 : 1,
+                marginLeft: pathPosition.x - 40, // Center the 80px image (40px offset)
+                top: pathPosition.y + 40, // Add padding offset
+              }}
+              disabled={mission.status === "locked"}
+            >
+              <Image
+                // @ts-ignore
+                source={getMissionImageSource(mission)}
+                style={[styles.missionImage]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           );
         })}
 
