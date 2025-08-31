@@ -1,17 +1,21 @@
+import React from "react";
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
 
 import { ImagesSource } from "@/assets/images";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
+import { useAuthStore } from "@/store/auth";
 import { Container } from "@/components/container";
 
 type UserStats = {
@@ -69,13 +73,51 @@ const menuItems = [
     icon: "information-circle-outline" as keyof typeof Ionicons.glyphMap,
     description: "Informações do aplicativo",
   },
+  {
+    id: "logout",
+    title: "Sair",
+    icon: "log-out-outline" as keyof typeof Ionicons.glyphMap,
+    description: "Sair da sua conta",
+  },
 ];
 
 export default function Profile() {
   const { top } = useSafeAreaInsets();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
 
   const getXpPercentage = () => {
     return (userProfile.stats.xp / userProfile.stats.maxXp) * 100;
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Sair",
+      "Tem certeza que deseja sair da sua conta?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Sair",
+          style: "destructive",
+          onPress: () => {
+            logout();
+            router.replace("/login");
+          },
+        },
+      ]
+    );
+  };
+
+  const handleMenuItemPress = (itemId: string) => {
+    if (itemId === "logout") {
+      handleLogout();
+    } else {
+      // Handle other menu items
+      Alert.alert("Em breve", `Funcionalidade "${itemId}" será implementada em breve.`);
+    }
   };
 
   return (
@@ -103,9 +145,9 @@ export default function Profile() {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
-            <Ionicons name="person-outline" size={48} color={colors.text} />
+            <Ionicons name="person" size={48} color={colors.text} />
           </View>
-          <Text style={styles.profileName}>{userProfile.name}</Text>
+          <Text style={styles.profileName}>{user?.name || userProfile.name}</Text>
           <Text style={styles.joinDate}>Membro desde {userProfile.joinDate}</Text>
         </View>
 
@@ -156,7 +198,11 @@ export default function Profile() {
         <View style={styles.menuSection}>
           <Text style={styles.sectionTitle}>Configurações</Text>
           {menuItems.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.menuItem}>
+            <TouchableOpacity 
+              key={item.id} 
+              style={styles.menuItem}
+              onPress={() => handleMenuItemPress(item.id)}
+            >
               <BlurView intensity={30} tint="dark" style={styles.menuItemContent}>
                 <View style={styles.menuItemLeft}>
                   <View style={styles.menuIconContainer}>

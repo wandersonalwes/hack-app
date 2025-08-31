@@ -10,20 +10,30 @@ import {
   Alert,
   ImageBackground,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { ImagesSource } from "@/assets/images";
 import { colors } from "@/styles/colors";
+import { useAuthStore } from "@/store/auth";
 
 export default function Login() {
   const { top } = useSafeAreaInsets();
+  const router = useRouter();
+  const { login, isLoading, isAuthenticated } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect to journey if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/(tabs)/journey");
+    }
+  }, [isAuthenticated, router]);
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -36,14 +46,18 @@ export default function Login() {
       return;
     }
 
-    setIsLoading(true);
-
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
-      Alert.alert("Sucesso", "Login realizado com sucesso!");
-      // Here you would typically navigate to the main app or handle authentication
-    }, 1500);
+    const success = await login(email, password);
+    
+    if (success) {
+      Alert.alert("Sucesso", "Login realizado com sucesso!", [
+        {
+          text: "OK",
+          onPress: () => router.replace("/(tabs)/journey"),
+        },
+      ]);
+    } else {
+      Alert.alert("Erro", "Email ou senha incorretos. Tente: joao@gmail.com / 123");
+    }
   };
 
   const handleForgotPassword = () => {
