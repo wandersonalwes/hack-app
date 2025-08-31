@@ -282,10 +282,11 @@ const styles = StyleSheet.create({
   },
   aiMessageContainer: {
     justifyContent: "flex-start",
+    flexDirection: "row",
   },
   userMessageContainer: {
     justifyContent: "flex-end",
-    flexDirection: "row-reverse",
+    flexDirection: "row",
   },
   aiAvatar: {
     width: 32,
@@ -302,10 +303,11 @@ const styles = StyleSheet.create({
   userMessageBubbleWrapper: {
     borderRadius: 20,
     borderBottomRightRadius: 4,
-    backgroundColor: "rgba(101, 168, 58, 0.2)",
+    backgroundColor: "rgba(101, 168, 58, 0.3)",
     borderWidth: 1,
     borderColor: "#65a83a",
     overflow: "hidden",
+    alignSelf: "flex-end",
   },
   messageBubble: {
     borderRadius: 20,
@@ -315,6 +317,7 @@ const styles = StyleSheet.create({
   },
   aiMessageBubble: {
     borderBottomLeftRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   userMessageBubble: {
     borderBottomRightRadius: 4,
