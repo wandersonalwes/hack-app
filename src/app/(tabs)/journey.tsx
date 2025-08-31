@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 import { BlurView } from "expo-blur";
+import { useRouter } from "expo-router";
 
 import { ImagesSource } from "@/assets/images";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -53,7 +54,7 @@ const journey = {
     {
       id: "7",
       type: "quiz" as const,
-      status: "locked" as const,
+      status: "current" as const,
       xp: 30,
       icon: "🏆",
       color: "#8B5CF6",
@@ -62,7 +63,7 @@ const journey = {
     {
       id: "8",
       type: "chat" as const,
-      status: "locked" as const,
+      status: "completed" as const,
       xp: 15,
       icon: "🕊️",
       color: "#e74124",
@@ -71,7 +72,7 @@ const journey = {
     {
       id: "9",
       type: "mission" as const,
-      status: "current" as const,
+      status: "completed" as const,
       xp: 15,
       icon: "👑",
       color: "#e74124",
@@ -172,8 +173,11 @@ const styles = StyleSheet.create({
 
 export default function Journey() {
   const { top } = useSafeAreaInsets();
+  const router = useRouter();
   const scrollViewRef = useRef<ScrollView>(null);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showMission, setShowMission] = useState(false);
+  const [showRead, setShowRead] = useState(false);
   const [selectedMission, setSelectedMission] = useState<string | null>(null);
 
   // Scroll to bottom on mount for reverse scrolling effect
@@ -186,8 +190,30 @@ export default function Journey() {
 
   const handleMissionPress = (missionId: string, missionStatus: string) => {
     if (missionStatus === "locked") return;
+
     setSelectedMission(missionId);
-    setShowQuiz(true);
+
+    // Find the mission to get its type
+    const mission = journey.missions.find((m) => m.id === missionId);
+    if (!mission) return;
+
+    // Handle different mission types
+    switch (mission.type as Mission["type"]) {
+      case "quiz":
+        setShowQuiz(true);
+        break;
+      case "mission":
+        setShowMission(true);
+        break;
+      case "read":
+        setShowRead(true);
+        break;
+      case "chat":
+        router.push("/chat");
+        break;
+      default:
+        console.log(`Unknown mission type: ${mission.type}`);
+    }
   };
 
   const handleQuizComplete = (score: number) => {
@@ -200,6 +226,26 @@ export default function Journey() {
     setSelectedMission(null);
   };
 
+  const handleMissionClose = () => {
+    setShowMission(false);
+    setSelectedMission(null);
+  };
+
+  const handleReadClose = () => {
+    setShowRead(false);
+    setSelectedMission(null);
+  };
+
+  const handleMissionComplete = () => {
+    console.log(`Mission completed for: ${selectedMission}`);
+    // Here you could update mission status, add XP, etc.
+  };
+
+  const handleReadComplete = () => {
+    console.log(`Read completed for: ${selectedMission}`);
+    // Here you could update mission status, add XP, etc.
+  };
+
   return (
     <>
       <QuizModal
@@ -208,8 +254,17 @@ export default function Journey() {
         onComplete={handleQuizComplete}
       />
 
-      {/* <MissionModal visible={true} onClose={() => {}} /> */}
-      {/* <ReadModal visible={true} onClose={() => {}} /> */}
+      <MissionModal
+        visible={showMission}
+        onClose={handleMissionClose}
+        onComplete={handleMissionComplete}
+      />
+
+      <ReadModal
+        visible={showRead}
+        onClose={handleReadClose}
+        onComplete={handleReadComplete}
+      />
 
       <BlurView
         style={[styles.coinContainer, { top }]}
