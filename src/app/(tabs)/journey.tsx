@@ -13,6 +13,7 @@ import { ImagesSource } from "@/assets/images";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QuizModal } from "@/components/quiz-modal";
 import { MissionModal } from "@/components/mission-modal";
+import { ReadModal } from "@/components/read-modal";
 
 type Mission = {
   id: string;
@@ -208,6 +209,7 @@ export default function Journey() {
       />
 
       {/* <MissionModal visible={true} onClose={() => {}} /> */}
+      {/* <ReadModal visible={true} onClose={() => {}} /> */}
 
       <BlurView
         style={[styles.coinContainer, { top }]}
