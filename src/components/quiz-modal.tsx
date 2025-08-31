@@ -84,7 +84,7 @@ export function QuizModal({ visible, onClose, onComplete }: QuizModalProps) {
     if (selectedAnswer === null) return;
 
     setAnswered(true);
-    
+
     // Check if answer is correct
     if (selectedAnswer === currentQuestion.correctAnswer) {
       setScore(score + 1);
@@ -111,14 +111,19 @@ export function QuizModal({ visible, onClose, onComplete }: QuizModalProps) {
 
   const getAnswerStyle = (answerIndex: number) => {
     if (!answered) {
-      return selectedAnswer === answerIndex ? styles.buttonSelected : styles.button;
+      return selectedAnswer === answerIndex
+        ? styles.buttonSelected
+        : styles.button;
     }
 
     if (answerIndex === currentQuestion.correctAnswer) {
       return styles.buttonCorrect;
     }
 
-    if (answerIndex === selectedAnswer && selectedAnswer !== currentQuestion.correctAnswer) {
+    if (
+      answerIndex === selectedAnswer &&
+      selectedAnswer !== currentQuestion.correctAnswer
+    ) {
       return styles.buttonIncorrect;
     }
 
@@ -127,103 +132,136 @@ export function QuizModal({ visible, onClose, onComplete }: QuizModalProps) {
   if (showResult) {
     return (
       <Modal visible={visible} transparent>
-        <View style={styles.container}>
-          <View style={{ width: 300 }}>
-            <View style={{ position: "relative" }}>
-              <Image source={ImagesSource.mascote} style={styles.mascote} />
-              <BlurView intensity={50} tint="dark" style={styles.card}>
-                <Text style={styles.question}>Quiz Concluído!</Text>
-                <Text style={[styles.question, { fontSize: 16, marginTop: 16 }]}>
-                  Você acertou {score} de {quizQuestions.length} questões
-                </Text>
-                <Text style={styles.progressText}>
-                  {Math.round((score / quizQuestions.length) * 100)}% de acertos
-                </Text>
-              </BlurView>
-            </View>
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={handleClose}
+        >
+          <View style={styles.container}>
+            <TouchableOpacity
+              style={{ width: 300 }}
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
+            >
+              <View style={{ position: "relative" }}>
+                <Image source={ImagesSource.mascote} style={styles.mascote} />
+                <BlurView intensity={50} tint="dark" style={styles.card}>
+                  <Text style={styles.question}>Quiz Concluído!</Text>
+                  <Text
+                    style={[styles.question, { fontSize: 16, marginTop: 16 }]}
+                  >
+                    Você acertou {score} de {quizQuestions.length} questões
+                  </Text>
+                  <Text style={styles.progressText}>
+                    {Math.round((score / quizQuestions.length) * 100)}% de
+                    acertos
+                  </Text>
+                </BlurView>
+              </View>
 
-            <View style={{ alignItems: "center" }}>
-              <TouchableOpacity
-                style={styles.buttonResponderContainer}
-                activeOpacity={0.8}
-                onPress={handleClose}
-              >
-                <LinearGradient
-                  colors={["#65a83a", "#3b8033"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 0, y: 1 }}
-                  style={styles.buttonResponder}
+              <View style={{ alignItems: "center" }}>
+                <TouchableOpacity
+                  style={styles.buttonResponderContainer}
+                  activeOpacity={0.8}
+                  onPress={handleClose}
                 >
-                  <Text style={styles.buttonResponderText}>Finalizar</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
+                  <LinearGradient
+                    colors={["#65a83a", "#3b8033"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={styles.buttonResponder}
+                  >
+                    <Text style={styles.buttonResponderText}>Finalizar</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     );
   }
 
   return (
-    <Modal visible={visible} transparent>
-      <View style={styles.container}>
-        <View style={{ width: 300 }}>
-          <View style={{ position: "relative" }}>
-            <Image source={ImagesSource.mascote} style={styles.mascote} />
-            <BlurView intensity={50} tint="dark" style={styles.card}>
-              <Text style={styles.question}>
-                {currentQuestion.question}
-              </Text>
+    <Modal visible={visible} transparent animationType="slide">
+      <TouchableOpacity
+        style={styles.overlay}
+        activeOpacity={1}
+        onPress={handleClose}
+      >
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={{ width: 300 }}
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View style={{ position: "relative" }}>
+              <Image source={ImagesSource.mascote} style={styles.mascote} />
+              <BlurView intensity={50} tint="dark" style={styles.card}>
+                <Text style={styles.question}>{currentQuestion.question}</Text>
 
-              <View style={{ gap: 8, width: "100%" }}>
-                {currentQuestion.options.map((option, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleAnswerSelect(index)}
-                    disabled={answered}
-                  >
-                    <BlurView intensity={50} tint="dark" style={getAnswerStyle(index)}>
-                      <Text style={styles.buttonText}>{option}</Text>
-                    </BlurView>
-                  </TouchableOpacity>
-                ))}
+                <View style={{ gap: 8, width: "100%" }}>
+                  {currentQuestion.options.map((option, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => handleAnswerSelect(index)}
+                      disabled={answered}
+                    >
+                      <BlurView
+                        intensity={50}
+                        tint="dark"
+                        style={getAnswerStyle(index)}
+                      >
+                        <Text style={styles.buttonText}>{option}</Text>
+                      </BlurView>
+                    </TouchableOpacity>
+                  ))}
 
-                <Text style={styles.progressText}>
-                  {currentQuestionIndex + 1}/{quizQuestions.length}
-                </Text>
-              </View>
-            </BlurView>
-          </View>
+                  <Text style={styles.progressText}>
+                    {currentQuestionIndex + 1}/{quizQuestions.length}
+                  </Text>
+                </View>
+              </BlurView>
+            </View>
 
-          <View style={{ alignItems: "center" }}>
-            <TouchableOpacity
-              style={[
-                styles.buttonResponderContainer,
-                selectedAnswer === null && styles.buttonDisabled
-              ]}
-              activeOpacity={0.8}
-              onPress={handleSubmitAnswer}
-              disabled={selectedAnswer === null || answered}
-            >
-              <LinearGradient
-                colors={selectedAnswer === null ? ["#666", "#444"] : ["#65a83a", "#3b8033"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={styles.buttonResponder}
+            <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={[
+                  styles.buttonResponderContainer,
+                  selectedAnswer === null && styles.buttonDisabled,
+                ]}
+                activeOpacity={0.8}
+                onPress={handleSubmitAnswer}
+                disabled={selectedAnswer === null || answered}
               >
-                <Text style={styles.buttonResponderText}>
-                  {answered ? "Próxima" : "Responder"}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+                <LinearGradient
+                  colors={
+                    selectedAnswer === null
+                      ? ["#666", "#444"]
+                      : ["#65a83a", "#3b8033"]
+                  }
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={styles.buttonResponder}
+                >
+                  <Text style={styles.buttonResponderText}>
+                    {answered ? "Próxima" : "Responder"}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
