@@ -12,6 +12,7 @@ import { BlurView } from "expo-blur";
 import { ImagesSource } from "@/assets/images";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QuizModal } from "@/components/quiz-modal";
+import { MissionModal } from "@/components/mission-modal";
 
 type Mission = {
   id: string;
@@ -191,11 +192,13 @@ export default function Journey() {
 
   return (
     <>
-      <QuizModal 
+      <QuizModal
         visible={showQuiz}
         onClose={handleQuizClose}
         onComplete={handleQuizComplete}
       />
+
+      {/* <MissionModal visible={true} onClose={() => {}} /> */}
 
       <BlurView
         style={[styles.coinContainer, { top }]}
