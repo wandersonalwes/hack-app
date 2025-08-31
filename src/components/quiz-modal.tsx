@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { ImagesSource } from "@/assets/images";
 import { colors } from "@/styles/colors";
@@ -63,9 +64,21 @@ export function QuizModal() {
             </BlurView>
           </View>
 
-          <TouchableOpacity style={styles.buttonResponder}>
-            <Text style={styles.buttonResponderText}>Responder</Text>
-          </TouchableOpacity>
+          <View style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              style={styles.buttonResponderContainer}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={["#65a83a", "#3b8033"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.buttonResponder}
+              >
+                <Text style={styles.buttonResponderText}>Responder</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -98,12 +111,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  buttonResponder: {
-    backgroundColor: "#65a83a",
-    padding: 12,
+  buttonResponderContainer: {
     borderRadius: 80,
-    alignItems: "center",
     marginTop: 16,
+    overflow: "hidden",
+  },
+  buttonResponder: {
+    padding: 12,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonResponderText: {
     color: colors.text,
