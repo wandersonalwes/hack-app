@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wanderson.alves.e-i.heaven"
     },
     "android": {
       "adaptiveIcon": {
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5f3837c5-43ed-48a8-970e-cd6a889bdd78"
+      }
     }
   }
 }

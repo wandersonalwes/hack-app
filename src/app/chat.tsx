@@ -19,6 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { ImagesSource } from "@/assets/images";
 import { colors } from "@/styles/colors";
+import { askQuestion } from "@/api/ask-question";
 
 type Message = {
   id: string;
@@ -79,10 +80,9 @@ export default function Chat() {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputText.trim() === "") return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputText.trim(),
@@ -94,17 +94,32 @@ export default function Chat() {
     setInputText("");
     setIsTyping(true);
 
-    // Simulate AI typing and response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: generateAIResponse(inputText),
+    const response = await askQuestion(
+      inputText,
+      `Você é um assistente espiritual chamado Claudinho.
+
+      Você lida com o público jovem e cristão, então responda de forma a ele.
+      
+      Seja objetivo e responda apenas com o que foi pedido, seja bem breve.
+
+      Sempre responda com uma pergunta no final da resposta.
+
+      Responda apenas perguntas com contexto bíblico.
+      
+      Contexto: ${messages.map((message) => message.text).join("\n")}`
+    );
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        text: response.answer,
         isAI: true,
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiResponse]);
-      setIsTyping(false);
-    }, 1500);
+      },
+    ]);
+    setInputText("");
+    setIsTyping(false);
   };
 
   const renderMessage = (message: Message) => (
@@ -121,7 +136,9 @@ export default function Chat() {
       <View
         style={[
           styles.messageBubbleWrapper,
-          message.isAI ? styles.aiMessageBubbleWrapper : styles.userMessageBubbleWrapper,
+          message.isAI
+            ? styles.aiMessageBubbleWrapper
+            : styles.userMessageBubbleWrapper,
         ]}
       >
         <BlurView
@@ -150,14 +167,14 @@ export default function Chat() {
         style={[styles.header, { paddingTop: top }]}
       >
         <View style={styles.headerContent}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.backButton}
             onPress={handleGoBack}
             activeOpacity={0.7}
           >
             <Ionicons name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
-          
+
           <Image source={ImagesSource.mascote} style={styles.headerAvatar} />
           <View style={styles.headerInfo}>
             <Text style={styles.headerTitle}>Claudinho</Text>

@@ -47,7 +47,7 @@ export default function Login() {
     }
 
     const success = await login(email, password);
-    
+
     if (success) {
       Alert.alert("Sucesso", "Login realizado com sucesso!", [
         {
@@ -56,7 +56,10 @@ export default function Login() {
         },
       ]);
     } else {
-      Alert.alert("Erro", "Email ou senha incorretos. Tente: joao@gmail.com / 123");
+      Alert.alert(
+        "Erro",
+        "Email ou senha incorretos. Tente: joao@gmail.com / 123"
+      );
     }
   };
 
@@ -101,6 +104,7 @@ export default function Login() {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    defaultValue="joao@gmail.com"
                   />
                   <TextInput
                     style={styles.input}
@@ -110,6 +114,7 @@ export default function Login() {
                     placeholderTextColor={colors.text + "80"}
                     secureTextEntry
                     autoCapitalize="none"
+                    defaultValue="123"
                   />
 
                   <TouchableOpacity
